@@ -97,7 +97,7 @@
 - Vue Query v5 변경사항 요약
 
   1.  공통 사항
-      1. useQuery를 필두로 API REFERENCE를 사용할 때, 객체로 Argument를 전달(Named Argument)하여 가독성 향상
+      1. useQuery 등 API REFERENCE를 사용할 때, 객체로 Argument를 전달(Named Argument)하여 가독성 향상
   2.  useQuery
       1. onSuccess, onError, onSettled가 삭제됨
       2. useErrorBoundary -> throwOnError로 명칭 변경
