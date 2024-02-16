@@ -106,11 +106,11 @@
       1. cacheTime -> gcTime으로 명칭 변경
       2. useErrorBoundary -> throwOnError로 명칭 변경
   4.  useInfiniteQuery
-      1. initialPageParam 옵션 신규 추가(Required)
+      1. (Required) initialPageParam 옵션 신규 추가
          - 참고 링크 : https://tanstack.com/query/v5/docs/framework/react/guides/migrating-to-v5
-      2. initialPageParam 추가로, getNextPageParam도 Required
+      2. (Required) getNextPageParam도 Required로 변경
       3. getNextPageParam/getPreviousPageParam에 lastPageParam, allPageParam 추가
-      4. maxPages 옵션 신규 추가(...Options)
+      4. (Options) maxPages 옵션 신규 추가
          - 참고 링크 : https://tanstack.com/query/v5/docs/framework/vue/reference/useInfiniteQuery
 
 - Query v5 변경사항 REFERENCE
