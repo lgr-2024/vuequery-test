@@ -53,23 +53,23 @@
 
         ```
            const updatePostInPosts = async (newPost: PostType) => {
-           const response = await axios.post<PostType[]>('https://jsonplaceholder.typicode.com/posts', newPost)
-           return response.data
+              const response = await axios.post<PostType[]>('https://jsonplaceholder.typicode.com/posts', newPost)
+              return response.data
            }
 
            const useCreatePost = useMutation({
-           mutationFn: updatePostInPosts,
-           onSuccess: () => {
-              console.log('invalidateQueries')
-              queryClient.invalidateQueries({
-                 queryKey: ['posts'],
-                 refetchType: 'active',
-              })
-           }
+              mutationFn: updatePostInPosts,
+              onSuccess: () => {
+                 console.log('invalidateQueries')
+                 queryClient.invalidateQueries({
+                    queryKey: ['posts'],
+                    refetchType: 'active',
+                 })
+              }
            })
 
            const handleUpdatePost = (newPost: PostType) => {
-           useCreatePost.mutate(newPost)
+              useCreatePost.mutate(newPost)
            }
         ```
 
@@ -79,19 +79,18 @@
 
         ```
            const getCommentsByInfinite = async ({ pageParam = 1 }) => {
-              console.log(pageParam)
-              const response = await axios.get<CommentType[]>("https://jsonplaceholder.typicode.com/posts/" + pageParam + "/comments")
-              return response.data
+                 const response = await axios.get<CommentType[]>("https://jsonplaceholder.typicode.com/posts/" + pageParam + "/comments")
+                 return response.data
               }
 
               const useInfiniteComments = useInfiniteQuery({
-              queryKey: ['comments'],
-              queryFn: getCommentsByInfinite,
-              initialPageParam: 1,
-              getNextPageParam: (lastPage, allPages) => {
-                 const nextPage = allPages.length + 1;
-                 return lastPage.length > 0 ? nextPage : undefined;
-              },
+                 queryKey: ['comments'],
+                 queryFn: getCommentsByInfinite,
+                 initialPageParam: 1,
+                 getNextPageParam: (lastPage, allPages) => {
+                    const nextPage = allPages.length + 1;
+                    return lastPage.length > 0 ? nextPage : undefined;
+                 },
               })
         ```
 
@@ -109,8 +108,8 @@
       1. (Required) initialPageParam 옵션 신규 추가
          - 참고 링크 : https://tanstack.com/query/v5/docs/framework/react/guides/migrating-to-v5
       2. (Required) getNextPageParam도 Required로 변경
-      3. getNextPageParam/getPreviousPageParam에 lastPageParam, allPageParam 추가
-      4. (Options) maxPages 옵션 신규 추가
+      3. (Option) getNextPageParam/getPreviousPageParam에 lastPageParam, allPageParam 추가
+      4. (Option) maxPages 옵션 신규 추가
          - 참고 링크 : https://tanstack.com/query/v5/docs/framework/vue/reference/useInfiniteQuery
 
 - Query v5 변경사항 REFERENCE
