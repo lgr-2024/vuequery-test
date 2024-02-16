@@ -1,39 +1,15 @@
 <script setup lang="ts">
-import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from '@tanstack/vue-query'
-import { CommentType, PostType } from '../assets/types'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { PostType } from '../entity/types'
 import axios from 'axios';
-import { ref } from 'vue';
+import { useGetPosts } from '../api/post/query';
+import PostList from './post/PostList.vue';
+import Comment from './post/Comment.vue';
 
 const queryClient = useQueryClient()
-const openComments = ref(false)
-
-const toggleOpenComments = () => {
-  openComments.value = !openComments.value
-}
-
-// 1. COMPLETED_1: 데이터 패칭 함수
-const readPosts = async () => {
-  try {
-    console.log('refetch')
-
-    await new Promise(resolve => setTimeout(resolve, 1000 * 2));
-    const response = await axios.get<PostType[]>('https://jsonplaceholder.typicode.com/posts');
-    return response.data;
-  } catch (error) {
-    console.error("There was an error fetching the posts:", error);
-  }
-}
 
 // 2. COMPLETED_1: useQuery를 사용하여 fetch 데이터 cache
-const useGetPosts = useQuery({
-  queryKey: ['posts'],
-  queryFn: readPosts, // Default Query Function가 정의되지 않았을 때만 Required
-
-  // TODO_1: 5. Options 관리
-  enabled: true,
-  retry: 1000,
-  retryDelay: 1000 * 10,
-})
+const { posts, postsError, isPostsFetching, refetchPosts } = useGetPosts()
 
 // 3. COMPLETED_1: refetch 결과
 const refetchOnClick = () => {
@@ -43,7 +19,7 @@ const refetchOnClick = () => {
     console.log('Cache 데이터가 있으므로, 서버에게 요청하지 않음')
   } else {
     console.log('Cache 데이터가 없으므로, Query에 내장된 refetch 함수로 서버에게 재요청')
-    useGetPosts.refetch()
+    refetchPosts()
   }
 }
 
@@ -70,24 +46,6 @@ const useCreatePost = useMutation({
 const handleUpdatePost = (newPost: PostType) => {
   useCreatePost.mutate(newPost)
 }
-
-// 5. TODO_1: useInfiniteQueries
-const getCommentsByInfinite = async ({ pageParam = 1 }) => {
-  console.log(pageParam)
-  const response = await axios.get<CommentType[]>("https://jsonplaceholder.typicode.com/posts/" + pageParam + "/comments")
-  return response.data
-}
-
-const useInfiniteComments = useInfiniteQuery({
-  queryKey: ['comments'],
-  queryFn: getCommentsByInfinite,
-  initialPageParam: 1,
-  getNextPageParam: (lastPage, allPages) => {
-    const nextPage = allPages.length + 1;
-    return lastPage.length > 0 ? nextPage : undefined;
-  },
-})
-
 </script>
 
 <template>
@@ -101,37 +59,10 @@ const useInfiniteComments = useInfiniteQuery({
     body: 'new Body for useMutation'
   })">useCreatePost Button</button>
   <div>
-    <ul v-if="useGetPosts.data.value && useGetPosts.data.value.length > 0">
-      <li v-for="post in useGetPosts.data.value" :key="post.id" class="post-style">
-        <header class="header-layout">
-          <h3 class="header-title">{{ post.title }}</h3>
-          <span class="header-userId">{{ post.userId }}</span>
-        </header>
-        <p>{{ post.body }}</p>
-      </li>
-      <div>
-        <h3>
-          COMMENTS
-          <button @click="toggleOpenComments">toggle comments</button>
-        </h3>
-        <div v-if="openComments">
-          <div v-if="useInfiniteComments.isFetching && !useInfiniteComments.isFetchingNextPage">Fetching...</div>
-          <ol v-for="(comments, index) in useInfiniteComments.data.value?.pages" :key="index">
-            <li v-for="comment in comments" :key="comment.id">
-              {{ comment.name }}
-            </li>
-          </ol>
-          <button @click="() => useInfiniteComments.fetchNextPage()"
-            :disable="!useInfiniteComments.hasNextPage || useInfiniteComments.isFetchingNextPage">
-            <span v-if="useInfiniteComments.isFetchingNextPage">Loading more...</span>
-            <span v-else-if="useInfiniteComments.hasNextPage">Load more...</span>
-            <span v-else>Nothing more to load</span>
-          </button>
-        </div>
-      </div>
-    </ul>
-    <p v-else-if="useGetPosts.isLoading">Loading posts...</p>
-    <p v-else-if="useGetPosts.error">Error fetching posts: {{ useGetPosts.error.value?.message }}</p>
+    <PostList v-if="posts" :posts="posts" />
+    <p v-if="isPostsFetching">Loading posts...</p>
+    <p v-if="postsError">Error fetching posts: {{ postsError }}</p>
+    <Comment />
   </div>
 </template>
 
@@ -159,4 +90,4 @@ const useInfiniteComments = useInfiniteQuery({
   text-align: center;
   color: white
 }
-</style>
+</style>../entity/types
