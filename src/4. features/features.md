@@ -1,0 +1,3 @@
+- Read a Post (get API)
+- Craete a Post (post API)
+- Update a Post (fetch API)

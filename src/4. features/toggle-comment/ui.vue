@@ -1,3 +1,17 @@
+<script setup lang="ts">
+import { ref } from "vue";
+import { useInfiniteComments } from "../../api/comment/query";
+
+const { data, isFetching, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  useInfiniteComments();
+
+const openComments = ref(false);
+
+const toggleOpenComments = () => {
+  openComments.value = !openComments.value;
+};
+</script>
+
 <template>
   <div>
     <h3>
@@ -11,7 +25,10 @@
           {{ comment.name }}
         </li>
       </ol>
-      <button @click="() => fetchNextPage()" :disable="!hasNextPage || isFetchingNextPage">
+      <button
+        @click="() => fetchNextPage()"
+        :disable="!hasNextPage || isFetchingNextPage"
+      >
         <span v-if="isFetchingNextPage">Loading more...</span>
         <span v-else-if="hasNextPage">Load more...</span>
         <span v-else>Nothing more to load</span>
@@ -19,18 +36,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useInfiniteComments } from '../../api/comment/query'
-
-const { data, isFetching, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteComments()
-
-const openComments = ref(false)
-
-const toggleOpenComments = () => {
-  openComments.value = !openComments.value
-}
-</script>
 
 <style scoped></style>

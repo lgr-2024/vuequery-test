@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { PostType } from "../../entity/types";
+
+defineProps<{
+  post: PostType;
+}>();
+</script>
+
 <template>
   <li class="post-style">
     <header class="header-layout">
@@ -7,13 +15,5 @@
     <p>{{ post.body }}</p>
   </li>
 </template>
-
-<script setup lang="ts">
-import { PostType } from '../../entity/types';
-
-defineProps<{
-  post: PostType
-}>();
-</script>
 
 <style scoped></style>
